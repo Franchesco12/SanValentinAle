@@ -1,8 +1,25 @@
-<div class="background-romantico">
-  <div #heartsContainer class="hearts-container"></div>
-  <div class="container">
-      <h1 class="question">¿Quieres ser mi San Valentín, Alessandra? 😍❤️</h1>
-      <button class="yes-button" (click)="handleSiClick()"> Sí 💖</button>
-      <button id="neButton" class="no-button" (click)="handleNeClick()"> No 💔</button>
+<div class="fondo-disco">
+  <canvas id="estrellas"></canvas>
+
+  <div class="circulo-invitacion">
+    <h2 class="you-are-invited">ESTÁS INVITADO !!!!</h2>
+    <h1 class="titulo">MI CUMPLEAÑOS #22</h1>
+    <p class="detalle">
+      📅 Viernes 7 de junio<br />
+      🕗 9:00 PM
+    </p>
+    <p class="detalle">📍 AVENIDA CENTRAL 1304</p>
+    <p class="detalle">
+      <a
+        href="https://maps.app.goo.gl/HTsiy9ePvExEmpHG7"
+        target="_blank"
+        rel="noopener"
+        class="ubicacion"
+      >
+        📍 REFERENCIA: CRUCE DE LA AV CENTRAL CON AV HOLANDA
+      </a>
+    </p>
+    <p class="trago">🍸 ¡LLEVAR TRAGO OBLIGATORIO !!!</p>
+    <button (click)="confirmarAsistencia()">CONFIRMAR ASISTENCIA</button>
   </div>
 </div>

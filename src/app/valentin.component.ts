@@ -1,89 +1,79 @@
-import { Component, OnInit, Renderer2, ElementRef, ViewChild, PLATFORM_ID, Inject } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import {
+  OnInit,
+  Renderer2,
+  ElementRef,
+  ViewChild,
+} from '@angular/core';
 import Swal from 'sweetalert2';
+import { Component, AfterViewInit, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 
 @Component({
   selector: 'san-valentin',
   templateUrl: './valentin.component.html',
-  styleUrls: ['./valentin.component.css']
+  styleUrls: ['./valentin.component.css'],
 })
 export class ValentinComponent implements OnInit {
-  @ViewChild('heartsContainer', { static: false }) heartsContainer!: ElementRef;
+  enlaceConfirmacion = 'https://forms.gle/tu-enlace-de-google-forms';
 
-  neCounter = 0;
-  neMessages: string[] = [
-    "😡 ¿Cómo que nooooo?",
-    "😠 Deja de poner no oe",
-    "😤 Dios mío ya no pongas noooo",
-    "😭 Esto ya no me está gustando",
-    "😫 Otra vez??? Ya nooo",
-    "😱 JSJSJS buenooo, desaparecerá esta opción"
-  ];
-
-  constructor(
-    private renderer: Renderer2,
-    @Inject(PLATFORM_ID) private platformId: any
-  ) {}
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
   ngOnInit(): void {
-    // Evita errores en Server-Side Rendering
+    // algo aquí, o vacío si no necesitas usarlo
+  }
+
+  confirmarAsistencia() {
+    window.open(this.enlaceConfirmacion, '_blank');
+  }
+
+  ngAfterViewInit() {
     if (isPlatformBrowser(this.platformId)) {
-      setInterval(() => this.createHearts(), 500);
+      this.initEstrellas();
     }
   }
 
-  createHearts(): void {
-    if (!this.heartsContainer) return;
+  initEstrellas() {
+    const canvas = document.getElementById('estrellas') as HTMLCanvasElement;
+    const ctx = canvas.getContext('2d')!;
+    let estrellas: any[] = [];
 
-    for (let i = 0; i < 20; i++) {
-      const heart = this.renderer.createElement('div');
-      this.renderer.addClass(heart, 'heart');
-      heart.innerHTML = "❤️";
-      this.renderer.setStyle(heart, 'left', `${Math.random() * 100}%`);
-      this.renderer.setStyle(heart, 'animationDuration', `${3 + Math.random() * 2}s`);
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    window.addEventListener('resize', resize);
+    resize();
 
-      this.renderer.appendChild(this.heartsContainer.nativeElement, heart);
-
-      setTimeout(() => {
-        this.renderer.removeChild(this.heartsContainer.nativeElement, heart);
-      }, 5000);
+    for (let i = 0; i < 120; i++) {
+      estrellas.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        radius: Math.random() * 1.5 + 1,
+        speedY: Math.random() * 0.6 + 0.3,
+        opacity: Math.random() * 0.5 + 0.3
+      });
     }
-  }
 
-  handleNeClick(): void {
-    if (this.neCounter < this.neMessages.length) {
-      Swal.fire({
-        title: "💔 Oh no...",
-        text: this.neMessages[this.neCounter],
-        icon: "warning",
-        background: "#ffdde1",
-        confirmButtonColor: "#ff4d6d",
-        confirmButtonText: "Regresar 💘",
-        customClass: {
-          popup: "custom-popup"
+    const animar = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      estrellas.forEach(estrella => {
+        ctx.beginPath();
+        ctx.arc(estrella.x, estrella.y, estrella.radius, 0, 2 * Math.PI);
+        ctx.fillStyle = `rgba(255, 255, 255, ${estrella.opacity})`;
+        ctx.shadowColor = 'white';
+        ctx.shadowBlur = 6;
+        ctx.fill();
+
+        estrella.y += estrella.speedY;
+        if (estrella.y > canvas.height) {
+          estrella.y = 0;
+          estrella.x = Math.random() * canvas.width;
         }
       });
-      this.neCounter++;
-    } else {
-      const neButton = document.getElementById("neButton");
-      if (neButton) {
-        this.renderer.setStyle(neButton, "display", "none");
-      }
-    }
-  }
+      requestAnimationFrame(animar);
+    };
 
-  handleSiClick(): void {
-    Swal.fire({
-      title: "💖 ¡Síiii! 💖",
-      text: "Rawrrrr, me alegro mucho de que hayas aceptado ser mi San Valentín, para confirmar, escribe SI en nuestro chat 🥰❤!!! Gracias  ❤!!",
-      icon: "success",
-      background: "#ffe4e1",
-      confirmButtonColor: "#ff4d6d",
-      confirmButtonText: "¡Al fin!! Gracias!!! 💞",
-      customClass: {
-        popup: "custom-popup"
-      }
-    });
+    animar();
   }
 }
