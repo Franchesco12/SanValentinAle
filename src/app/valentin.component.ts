@@ -15,7 +15,7 @@ import { isPlatformBrowser } from '@angular/common';
   styleUrls: ['./valentin.component.css'],
 })
 export class ValentinComponent implements OnInit {
-  enlaceConfirmacion = 'https://forms.gle/tu-enlace-de-google-forms';
+  enlaceConfirmacion = 'https://docs.google.com/forms/d/e/1FAIpQLSdgCZgrB69o7nfVxJqOo4XzSQAmuUOE1ZM_ezAC7FzmlF4Qxw/viewform?usp=dialog';
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
